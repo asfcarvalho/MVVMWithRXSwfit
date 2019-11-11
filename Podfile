@@ -6,8 +6,8 @@ target 'MVVMRxSwift' do
   use_frameworks!
 
   # Pods for MVVMRxSwift
-      pod 'RxSwift'
-    pod 'RxCocoa'
+  pod 'RxSwift', '4.5'
+  pod 'RxCocoa', '4.5'
 
   target 'MVVMRxSwiftTests' do
     inherit! :search_paths

@@ -31,23 +31,25 @@ class PeopleViewController: UIViewController {
         
         let peopleViewModel = PeopleViewModel()
         
+    
         
-        
-        peopleViewModel.people.catchError({ _ in
-            Observable.never()
-        }).bind(to: tableView.rx.items(cellIdentifier: cellName, cellType: PeopleTableViewCell.self)) { (row, element, cell) in
-            cell.setupCell(element.name ?? "")
-            }.disposed(by: disposeBag)
-//
-//        peopleViewModel.people.subscribe(onError: { (error) in
-//            print(error.localizedDescription)
-//            }).disposed(by: disposeBag)
+        peopleViewModel.people.subscribe(onNext: { (result) in
+            DispatchQueue.main.async {
+                Observable.just(result).bind(to: self.tableView.rx.items(cellIdentifier: self.cellName, cellType: UITableViewCell.self)) { (row, element, cell) in
+                    cell.setupCell(element.name ?? "")
+                    }.disposed(by: self.disposeBag)
+                
+                peopleViewModel.people.subscribe(onError: { (error) in
+                    print(error.localizedDescription)
+                }).disposed(by: self.disposeBag)
+            }
+        }, onError: { (error) in
+            print(error)
+        }).disposed(by: disposeBag)
         
         tableView.rx.modelSelected(PeopleViewModel.Output.self).subscribe(onNext: { (item) in
             print(item.name)
         }).disposed(by: disposeBag)
-        
-//        tableView.rx.setDelegate(self).disposed(by: disposeBag)
         
     }
     
